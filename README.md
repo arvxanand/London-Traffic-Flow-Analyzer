@@ -1,5 +1,4 @@
-# Fundies-II-AE1
-Traffic Flow Analyzer
+# London-Traffic-Flow-Analyzer
 
 A Python project that fetches real-time traffic data from the UK National Highways WebTRIS API and analyzes traffic patterns for a given motorway sensor.
 
