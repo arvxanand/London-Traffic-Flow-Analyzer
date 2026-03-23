@@ -1,7 +1,7 @@
 from datetime import date, time
 import pytest
 from webtris_client import TrafficObservation, API, SingleSite
-from unittest.mock import Mock
+from unittest.mock import patch, Mock
 
 class TestTrafficObservation:
     ''' Pytest Fixtures for Traffic Observation '''
@@ -9,11 +9,6 @@ class TestTrafficObservation:
     @pytest.fixture
     def all_paramaters(self):
         return TrafficObservation(date(2026, 3, 3), time(0, 1, 30), "M25/4432A", 63.0, 100)
-    
-    @pytest.fixture
-    def test_data(self) -> bool:
-        a = TrafficObservation(date(2026, 3, 3), time(0, 1, 30), "M25/4432A", 63.0, 100)
-        return a is not None
 
     @pytest.fixture
     def missing_paramaters(self):
@@ -24,24 +19,24 @@ class TestTrafficObservation:
     '''
 
     ''' Traffic Observation Parameters Test'''
-    def test_all_paramaters(self, test_data):
-        object1 = test_data
-        assert object1 is True
+    def test_all_paramaters(self):
+        a = TrafficObservation(date(2026, 3, 3), time(0, 1, 30), "M25/4432A", 63.0, 100)
+        assert a.has_all_the_data() is True
     #This test checks that all the paramaters are filled for Traffic Obseravtion. returns True if has_all_data() method we made is True
 
     def test_missing_speed_data(self):
-        a1 = TrafficObservation(date(2026, 3, 3), time(0, 1, 30), "M25/4432A", None, 100)
-        assert a1.has_all_the_data() is False
+        a = TrafficObservation(date(2026, 3, 3), time(0, 1, 30), "M25/4432A", None, 100)
+        assert a.has_all_the_data() is False
     #This test checks that the speed data is missing. It should return False showing that we are missing our speed data
 
     def test_missing_vehicle_data(self):
-        a1 = TrafficObservation(date(2026, 3, 3), time(0, 1, 30), "M25/4432A", 63.0, None)
-        assert a1.has_all_the_data() is False
+        a = TrafficObservation(date(2026, 3, 3), time(0, 1, 30), "M25/4432A", 63.0, None)
+        assert a.has_all_the_data() is False
     #This test is the same thing as above. Returns False when there is no value for the number of cars. 
 
     def test_missing_speed_and_vehicle(self):
-        a1 = TrafficObservation(date(2026, 3, 3), time(0, 1, 30), "M25/4432A", None, None)
-        assert a1.has_all_the_data() is False
+        a = TrafficObservation(date(2026, 3, 3), time(0, 1, 30), "M25/4432A", None, None)
+        assert a.has_all_the_data() is False
     #Again the same kind of test. this returns false expecting both the speed and number of cars to not have a value
 
 
@@ -61,7 +56,7 @@ class TestTrafficObservation:
 
     def test_print_speed_error(self, missing_paramaters):
         result = str(missing_paramaters)
-        assert "Speed=No Value" in result
+        assert "Speed = No Value" in result
     #Here I am testing taht __str__ prints "No Value" when calling from missing_paramaters() method. 
 
 
@@ -75,14 +70,40 @@ class TestAPI:
     
     @pytest.fixture
     def filled_row(self):
-        return 
-        {
+        return {
             "Site Name": "M25/4432A",
             "Report Date": "2026-03-03",
             "Time Period Ending": "00:01:30",
             "Avg mph": "63",
             "Total Volume": "100"
         }
+    
+    @pytest.fixture
+    def empty_row(self):
+        return {
+            "Site Name": "M25/4432A",
+            "Report Date": "2026-03-03",
+            "Time Period Ending": "00:01:30",
+            "Avg mph": "",
+            "Total Volume": ""
+        }
+    
+    @pytest.fixture
+    def succesful_mock_response(self):
+        m = Mock(status_code = 200)
+        m.json.return_value = {
+            "Rows": [
+                {
+                    "Site Name": "M25/4432A",
+                    "Report Date": "2025-10-19T00:00:00",
+                    "Time Period Ending": "00:14:00",
+                    "Avg mph": "65",
+                    "Total Volume": "182"
+                }
+            ]
+        }
+        m.raise_for_status = Mock()
+        return m
     
 
     def test_fix_floats_number(self, client):
@@ -98,7 +119,18 @@ class TestAPI:
         assert client.fix_floats("") is None
     
     def test_fix_rows(self, client, filled_row):
-        pass
+        a = client.fix_rows(filled_row)
+        assert isinstance(a, TrafficObservation)
+    
+    def test_fix_rows_correct_site_name(self, client, filled_row):
+        a = client.fix_rows(filled_row)
+        assert a.site_name == "M25/4432A"
+    
+    def test_fix_rows_correct_speed(self, client, filled_row):
+        a = client.fix_rows(filled_row)
+        assert a.avg_speed == 63
+
+
 
 
 
