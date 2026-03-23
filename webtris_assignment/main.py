@@ -4,6 +4,12 @@ from datetime import date
 #Here we are creating the client class to use
 client = API()
 
+'''
+To use this application for a differnt site, change the site_id and site_name below. You can find valid site_ids and site_names by going to the link below
+'https://webtris.nationalhighways.co.uk/api/v1.0/sites'
+To use a differnt date, change the date from inside load_from_client()
+'''
+
 #Here we are creating an onbject with the side_id and the site_name we want to get our data for
 #The site id and site name I have gotten are examples givin from the assignemnt brief
 site = SingleSite(site_id=461, site_name="M25/4432A", traffic_stats=[])
