@@ -6,11 +6,12 @@ import requests
 @dataclass(order=True) #For the class instructions it was said to have the variabls chronicallically. What order= True does is that it checks the 
 #observation date. If they both equal then it moves to time period ending. Checks if that is both equal and then keeps moving 
 class TrafficObservation:
-    observation_date: date
-    time_period_ending: time
-    site_name: str
-    avg_speed: float | None = None #For Avg speed and total vehicles we are saying that if the api doesnt give us a value then return None instead
-    total_vehicles: int | None = None
+    def __init__(self, observation_date : date, time_period_ending: time, site_name: str, avg_speed: float | None, total_vehicles: int | None):
+        self.observation_date = observation_date
+        self.time_period_ending = time_period_ending
+        self.site_name = site_name
+        self.avg_speed = avg_speed
+        self.total_vehicles = total_vehicles
 
     def has_all_the_data(self) -> bool:
         #Here we are checking to see if the values are both True. If the values are None then the pytest fails. 
@@ -25,20 +26,20 @@ class TrafficObservation:
             f"{self.site_name} {self.observation_date.isoformat()} " 
             #.strftime() turns time into a whatever you decide to set it to
             # In this case I've set it Hour:Minute:Second. Had to search this up to figure out how to do this
-            f"{self.time_period_ending.strftime('%H:%M:%S')} "
+            f"{self.time_period_ending.strftime('%H:%M:%S')}" 
             f"Total Vehicles={vehicles}, Speed={speed}"
         )
 
 
-class WebTRIS_API():
+class API():
     def __init__(self, base_url = "https://webtris.nationalhighways.co.uk/api/v1.0"):
         self.base_url = base_url
     #Setting a value for the base url makes it easier to reference the base url without having the long url in our code everyhere. 
     #It makes the code much more readable. 
 
-    def get_json_data(self, endpoint: str, parameters: dict):
+    def get_json_data(self, parameters: dict):
         try:
-            response = requests.get(f"{self.base_url}/{endpoint}", params=parameters, timeout = 10) 
+            response = requests.get(f"{self.base_url}/reports/daily", params=parameters, timeout = 10) 
             #We first get the base url we created earlier and then add the endpoints to it to tell the computer where we want to go. We then have the parameters
             #to filter it down more to get detailed as to what kind of data we want because there could be hundreds thousands of data in endpoint. 
             #The timeout is there to say that if this doesnt run after 10 seconds then raise an error
@@ -49,7 +50,7 @@ class WebTRIS_API():
         except HTTPError as e:
             print(f"HTTP error occurred: {e.response.status_code}") 
         except RequestException as e: 
-            print(f"Network error: {e}")
+            print(f"Network error: {e}") #I copy pasted these EXcpetions from the lecture notes but I undertsnad what each of them do and thier usefullness
     
     #Values like avg mph in the example are strings or some values can be empty strings. 
     def fix_floats(self, value: str) -> float | None:
@@ -96,9 +97,8 @@ class WebTRIS_API():
             "page": 1,
             "page_size": 500} #reason i have page as 1 and page size as 500 because in the example url this is what was given. 
     
-        #The reason we do "reports/daily" is because that is the endpoint the assigment says that gets the data. That is what is shown in the example url
         #The resason we have parameters is because the get_json_data method we made earlier attaches the paramaters to the URL. 
-        json_data = self.get_json_data("reports/daily", parameters)
+        json_data = self.get_json_data(parameters)
 
         traffic_data = [] #This is an empty list htat we are going to use to store all the Traffic Observations objects inside. 
         for info in json_data["Rows"]: #loop through each of the traffic record the API gives us from the "Rows" part of the API. the ["Rows"] is they key as to what we want
@@ -107,13 +107,14 @@ class WebTRIS_API():
         return traffic_data
     
 
-@dataclass()
-class SingleSite():
-    site_id: int #The assigment says that we have to store the site_id and site_name as atributes and also an 
-    site_name: str #attribute for storing a sequence of Individual Traffic Observations
-    traffic_stats: list[TrafficObservation]
 
-    def load_from_client(self, client: WebTRIS_API, day: date) -> None: #This function is simply just getting the API daat
+class SingleSite():
+    def __init__(self, site_id: int, site_name: str, traffic_stats: list[TrafficObservation]):
+        self.site_id = site_id #The assigment says that we have to store the site_id and site_name as atributes and also an 
+        self.site_name = site_name #attribute for storing a sequence of Individual Traffic Observations
+        self.traffic_stats = traffic_stats
+
+    def load_from_client(self, client: API, day: date) -> None: #This function is simply just getting the API daat
         '''  '''
         self.traffic_stats = client.get_daily_data(self.site_id, day)
         #Here we arelling the computer to use the client(which is the WebtisAPI class) to run the get_daily_data method that we made earlier 
@@ -187,7 +188,7 @@ class SingleSite():
                     most_cars = current_num_of_cars
                     busiest_hour = hour
         #Checking if current cars we have is greater then most cars. If so then we change the value of most cars to the current number of cars and then set the busiest hour to what the hour number
-        #was in the for loop. We alos check to see if most cars is None (WHY THOUGH?)
+        #was in the for loop. We alos check to see if most cars is None
 
         return busiest_hour
         #simply just returning the busisest hour so we know what the peak hour is. 
