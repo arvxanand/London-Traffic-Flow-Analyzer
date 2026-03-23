@@ -27,7 +27,7 @@ class TrafficObservation:
             #.strftime() turns time into a whatever you decide to set it to
             # In this case I've set it Hour:Minute:Second. Had to search this up to figure out how to do this
             f"{self.time_period_ending.strftime('%H:%M:%S')}" 
-            f"Total Vehicles={vehicles}, Speed={speed}"
+            f", Total Vehicles = {vehicles}, Speed = {speed}"
         )
 
 

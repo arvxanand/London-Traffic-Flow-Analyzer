@@ -11,6 +11,9 @@ site.load_from_client(client, date(2026, 1, 3))
 #Here we are getting the traffic data from a specific day
 #From this we get all 96 records from a 15 minute interval of one day
 
+#Just to make it visually easier to read in the terminal
+print("=" * 65) 
+
 #This is showing many records we got data from 
 print(f"Total number of records: {site.__len__()}")
 
@@ -43,6 +46,16 @@ if site.average_speed_per_hour(peak) is not None:
 #Here we are printing the total num of cars during the peak hour we found earloer
 if site.total_num_of_vehicles_per_hour(peak) is not None:
     print(f"Total number of vehicles during peak hour: {site.total_num_of_vehicles_per_hour(peak)}")
+
+#Just to make it visually easier to read in the terminal
+print("=" * 65) 
+
+print("\nAll records for hour 8 (8am-9am):")
+for a in site.record_for_certain_hour(8):
+    print(a)
+
+#Just to make it visually easier to read in the terminal
+print("=" * 65) 
 
 #Here we printing out all the records we got for the date we chose
 print("\nAll the records for a certain date:")
