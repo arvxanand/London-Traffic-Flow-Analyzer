@@ -2,6 +2,7 @@ from datetime import date, time
 import pytest
 from webtris_client import TrafficObservation, API, SingleSite
 from unittest.mock import patch, Mock
+from requests.exceptions import Timeout, HTTPError
 
 class TestTrafficObservation:
     ''' Pytest Fixtures for Traffic Observation '''
@@ -72,7 +73,7 @@ class TestAPI:
     def filled_row(self):
         return {
             "Site Name": "M25/4432A",
-            "Report Date": "2026-03-03",
+            "Report Date": "2026-03-03T00:00:00", 
             "Time Period Ending": "00:01:30",
             "Avg mph": "63",
             "Total Volume": "100"
@@ -82,12 +83,17 @@ class TestAPI:
     def empty_row(self):
         return {
             "Site Name": "M25/4432A",
-            "Report Date": "2026-03-03",
+            "Report Date": "2026-03-03T00:00:00",
             "Time Period Ending": "00:01:30",
             "Avg mph": "",
             "Total Volume": ""
         }
-    
+
+    '''
+    This pytest fixture makes a fake API call using Mock. From the lecture notes we learned that Mock is an objefct that can act like a real object.
+    We set the status code to 200 to simialte a succuslef response and then we use json.return_value to control what the reponse gives us.
+    Setting raise_for_status as Mock() makes it do nothing. This fixture is just simoly simulating a real request that would work withoug any errors.
+    '''
     @pytest.fixture
     def succesful_mock_response(self):
         m = Mock(status_code = 200)
@@ -130,7 +136,23 @@ class TestAPI:
         a = client.fix_rows(filled_row)
         assert a.avg_speed == 63
 
+    @patch("webtris_client.requests.get")
+    def test_func_returns_list(self, mock_get, client, succesful_mock_response):
+        mock_get.return_value = succesful_mock_response
+        a = client.get_daily_data(461, date(2026, 1, 3))
+        assert isinstance(a, list)
+    
+    @patch("webtris_client.requests.get")
+    def test_func_returns_TrafficObservatin(self, mock_get, client, succesful_mock_response):
+        mock_get.return_value = succesful_mock_response
+        a = client.get_daily_data(461, date(2026, 1, 3))
+        assert isinstance (a[0], TrafficObservation)
 
+    @patch("webtris_client.requests.get")
+    def test_error_handling(self, mock_get, client):
+        mock_get.side_effect = Timeout("Connection Timed out")
+        a = client.get_json_data({})
+        assert a is None
 
 
 
