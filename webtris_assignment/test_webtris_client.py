@@ -192,28 +192,34 @@ class TestSingleSite:
             TrafficObservation(date(2026, 1, 3), time(9, 59, 0), "M25/4432A", None, None),
         ]
         return SingleSite(site_id=461, site_name="M25/4432A", traffic_stats=recordings)
+    #We make this as a fixture so we dont need to make any API calls in the tests. We have a mixture of data and None values 
     
     @pytest.fixture
     def empty_sample(self):
         return SingleSite(site_id=461, site_name="M25/4432A", traffic_stats=[])
+    #We also make an empty one a fixture as well to test any edge cases to test what happens when there is no data at all. 
     
     ''' Average Speed tests '''
     def test_average_speed(self, sample):
         a = sample.average_speed()
         assert round(a, 2) == 61.67
+    #We have 3 valid speeds and the 4th is None so it shoild be ignored. We should get 61.67 as our average
     
     def test_average_speed_None(self, empty_sample):
         a = empty_sample.average_speed()
         assert a is None
+    #Checking that if there is no recordings for the function to look at then it returns None rather than crashing
     
     ''' Total # of cars tests '''    
     def test_number_of_cars(self, sample):
         a = sample.total_num_of_vehicles()
         assert a  == 550
+    #Checking that the total num of vehicles adds up to 550
 
     def test_total_num_of_cars_None(self, empty_sample):
         a = empty_sample.total_num_of_vehicles()
         assert a is None
+    #Checking in the empty list that it should return None because we have no recordings. 
     
     ''' Hour tests '''
     def test_total_num_of_cars_hour(self, sample, empty_sample):
@@ -221,23 +227,31 @@ class TestSingleSite:
         b = empty_sample.total_num_of_vehicles_per_hour(7)
         assert a == 450
         assert b is None
+    #Here we are checking that the total number of cars in the 8 hour mark adds up to 450
+    #We are also checking in a seperate object that the total numbers of cars in hour 7 should return None becayse we have recordings for that time
     
     def test_peak_hour(self, sample, empty_sample):
         a = sample.peak_hour() 
         b = empty_sample.peak_hour()
         assert a == 8
         assert b is None
+    #Here we are checking that the peak hour should be 8th hour based on the recording
+    #WE are also checking that from the empty sample data the peak hour should reutrn None because we have no recordings to get data from
     
     ''' Iteration and Length tests '''
     def test_iter_returns_TrafficObservation(self, sample):
          for observation in sample:
             assert isinstance(observation, TrafficObservation)
+    #Here we are checking that iterating over the site actually gives us TrafficObservation objects and not somethign else
 
     def test_length_sample(self, sample):
         assert len(sample) == 4
+    #Here we are checking tghat the number of recordings in our fixture is 4
 
     def test_record_for_certain_hour(self, sample, empty_sample):
         a = sample.record_for_certain_hour(8)
         b = empty_sample.record_for_certain_hour(6)
         assert len(a) == 2
         assert b == []
+    #Here we are checking that if we put a specifc hour we should get 2 recordings from that hour
+    #We are also checking from the empy fixture and making sure that it returns an empty list. 
