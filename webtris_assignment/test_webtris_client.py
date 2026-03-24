@@ -68,6 +68,7 @@ class TestAPI:
     @pytest.fixture
     def client(self):
         return API()
+    #Making a fixture lets us use a reusable API object so we dont have to create own in every class
     
     @pytest.fixture
     def filled_row(self):
@@ -78,7 +79,8 @@ class TestAPI:
             "Avg mph": "63",
             "Total Volume": "100"
         }
-    
+    #We create a fake row as a fixture so that we can use it tests and not have to write the same dictionary every time 
+
     @pytest.fixture
     def empty_row(self):
         return {
@@ -88,12 +90,9 @@ class TestAPI:
             "Avg mph": "",
             "Total Volume": ""
         }
+    #We also create another fake row with empty volume and speed strings. Again we can use this for tests and not have to write the same dictionary every time
 
-    '''
-    This pytest fixture makes a fake API call using Mock. From the lecture notes we learned that Mock is an objefct that can act like a real object.
-    We set the status code to 200 to simialte a succuslef response and then we use json.return_value to control what the reponse gives us.
-    Setting raise_for_status as Mock() makes it do nothing. This fixture is just simoly simulating a real request that would work withoug any errors.
-    '''
+    
     @pytest.fixture
     def succesful_mock_response(self):
         m = Mock(status_code = 200)
@@ -110,33 +109,45 @@ class TestAPI:
         }
         m.raise_for_status = Mock()
         return m
+    '''
+    This pytest fixture makes a fake API call using Mock. From the lecture notes we learned that Mock is an objefct that can act like a real object.
+    We set the status code to 200 to simialte a succuslef response and then we use json.return_value to control what the reponse gives us.
+    Setting raise_for_status as Mock() makes it do nothing. This fixture is just simoly simulating a real request that would work withoug any errors.
+    '''
     
     ''' fix floats tests '''
     def test_fix_floats_number(self, client):
         assert client.fix_floats("65.0") == 65.0
+    #The APi gives 65 as a string so we are chekcing that the fix_floats() function correctly turns that string into a float
 
     def test_fix_floats_None(self, client):
         assert client.fix_floats("") is None
+    #The API could have data missing so we have to account for None. Checking from our empty row fixture that the empty string will return None
     
     ''' fix ints tests '''
     def test_fix_int_number(self, client):
         assert client.fix_ints("100") == 100
+    #The API gives 100 as a string so we are checking that fix_ints() function correctly turns that string into a integer
 
     def test_fix_int_None(self, client):
         assert client.fix_floats("") is None
+    #Just like for floats, API could have data missing so we can have to account for that. Checking from our empty row fixture that the empty srting will return None
     
     ''' fix rows tests '''
     def test_fix_rows(self, client, filled_row):
         a = client.fix_rows(filled_row)
         assert isinstance(a, TrafficObservation)
+    #Here we are checking that fix_rows() function returns a TrafficOBservation objject. the isistance method checks that if it the right type
     
     def test_fix_rows_correct_site_name(self, client, filled_row):
         a = client.fix_rows(filled_row)
         assert a.site_name == "M25/4432A"
+    #Here we are checking that the site name is correctly pulled from the sample row and stored in the object
     
     def test_fix_rows_correct_speed(self, client, filled_row):
         a = client.fix_rows(filled_row)
         assert a.avg_speed == 63
+    #Here we are cehcking that the speed is correctly pulled from the sample row and stored in the object
 
     ''' mock tests '''
     @patch("webtris_client.requests.get")
@@ -144,18 +155,29 @@ class TestAPI:
         mock_get.return_value = succesful_mock_response
         a = client.get_daily_data(461, date(2026, 1, 3))
         assert isinstance(a, list)
+    '''
+    From our lecture notes, we learned that @patch("webtris_client.requests.get") replaces the requests.get with a mock object for our test so we dont have to 
+    keep calling the API. This means that we are nevevr actually making a real network request. We then use mock_get.return_value to control what the requests.get
+    returns. Just like how we did it in our lecture notes. 
+    Afterward we check that our object is an instance of a list by giving our site_id and date. 
+    '''
     
     @patch("webtris_client.requests.get")
     def test_func_returns_TrafficObservatin(self, mock_get, client, succesful_mock_response):
         mock_get.return_value = succesful_mock_response
         a = client.get_daily_data(461, date(2026, 1, 3))
         assert isinstance (a[0], TrafficObservation)
+    #Here we are checking that each row in the fake response gets converted into a TrafficObservatiin object 
 
     @patch("webtris_client.requests.get")
     def test_error_handling(self, mock_get, client):
         mock_get.side_effect = Timeout("Connection Timed out")
         a = client.get_json_data({})
         assert a is None
+    '''
+    From out lecture notes, we leanrt to use side_effect to make requests.get raise an exception instead of returning a reponse
+    This test tests that our Timeout block in the get_json_data() function catches the error and returns None instead of crashing
+    '''
 
 
 
