@@ -2,7 +2,7 @@ from datetime import date, time
 import pytest
 from webtris_client import TrafficObservation, API, SingleSite
 from unittest.mock import patch, Mock
-from requests.exceptions import Timeout, HTTPError
+from requests.exceptions import Timeout
 
 class TestTrafficObservation:
     ''' Pytest Fixtures for Traffic Observation '''
@@ -157,7 +157,35 @@ class TestAPI:
 
 
 class TestSingleSite:
-    pass
+    
+    @pytest.fixture
+    def sample(self):
+        recordings = [
+            TrafficObservation(date(2026, 1, 3), time(8, 14, 0), "M25/4432A", 60.0, 200),
+            TrafficObservation(date(2026, 1, 3), time(8, 29, 0), "M25/4432A", 55.0, 250),
+            TrafficObservation(date(2026, 1, 3), time(8, 44, 0), "M25/4432A", 70.0, 100),
+            TrafficObservation(date(2026, 1, 3), time(8, 59, 0), "M25/4432A", None, None),
+        ]
+        return SingleSite(site_id=461, site_name="M25/4432A", traffic_stats=recordings)
+    
+    @pytest.fixture
+    def empty_sample(self):
+        return SingleSite(site_id=461, site_name="M25/4432A", traffic_stats=[])
+    
+    def test_avearge_speed(self, sample):
+        a = sample.average_speed()
+        assert round(a, 2) == 61.67
+    
+    def test_average_speed_None(self, empty_sample):
+        a = empty_sample.average_speed()
+        assert a is None
+    
+    def test_number_of_cars(self, sample):
+        a = sample.total_num_of_vehicles()
+        assert a  == 550
 
+    def test_total_num_of_cars_None(self, empty_sample):
+        a = empty_sample.total_num_of_vehicles()
+        assert a is None
 
-
+    
