@@ -163,8 +163,8 @@ class TestSingleSite:
         recordings = [
             TrafficObservation(date(2026, 1, 3), time(8, 14, 0), "M25/4432A", 60.0, 200),
             TrafficObservation(date(2026, 1, 3), time(8, 29, 0), "M25/4432A", 55.0, 250),
-            TrafficObservation(date(2026, 1, 3), time(8, 44, 0), "M25/4432A", 70.0, 100),
-            TrafficObservation(date(2026, 1, 3), time(8, 59, 0), "M25/4432A", None, None),
+            TrafficObservation(date(2026, 1, 3), time(9, 44, 0), "M25/4432A", 70.0, 100),
+            TrafficObservation(date(2026, 1, 3), time(9, 59, 0), "M25/4432A", None, None),
         ]
         return SingleSite(site_id=461, site_name="M25/4432A", traffic_stats=recordings)
     
@@ -187,5 +187,28 @@ class TestSingleSite:
     def test_total_num_of_cars_None(self, empty_sample):
         a = empty_sample.total_num_of_vehicles()
         assert a is None
-
     
+    def test_total_num_of_cars_hour(self, sample, empty_sample):
+        a = sample.total_num_of_vehicles_per_hour(8)
+        b = empty_sample.total_num_of_vehicles_per_hour(7)
+        assert a == 450
+        assert b is None
+    
+    def test_peak_hour(self, sample, empty_sample):
+        a = sample.peak_hour() 
+        b = empty_sample.peak_hour()
+        assert a == 8
+        assert b is None
+    
+    def test_iter_returns_TrafficObservation(self, sample):
+         for observation in sample:
+            assert isinstance(observation, TrafficObservation)
+
+    def test_length_sample(self, sample):
+        assert len(sample) == 4
+
+    def test_record_for_certain_hour(self, sample, empty_sample):
+        a = sample.record_for_certain_hour(8)
+        b = empty_sample.record_for_certain_hour(6)
+        assert len(a) == 2
+        assert b == []
