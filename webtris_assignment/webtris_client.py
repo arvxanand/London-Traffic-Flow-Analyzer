@@ -67,7 +67,7 @@ class API():
         return int(value)
     
     def fix_rows(self, row: dict) -> TrafficObservation:
-        observation_date = datetime.strptime(row["Report Date"], "%Y-%m-%d").date()
+        observation_date = datetime.strptime(row["Report Date"], "%Y-%m-%dT%H:%M:%S").date()
 
         time_period_ending = datetime.strptime(row["Time Period Ending"], "%H:%M:%S").time()
 
