@@ -64,7 +64,7 @@ class TestTrafficObservation:
 
 
 class TestAPI:
-    
+    ''' Pytest Fixtures for WebTrisAPI '''
     @pytest.fixture
     def client(self):
         return API()
@@ -111,19 +111,21 @@ class TestAPI:
         m.raise_for_status = Mock()
         return m
     
-
+    ''' fix floats tests '''
     def test_fix_floats_number(self, client):
         assert client.fix_floats("65.0") == 65.0
 
     def test_fix_floats_None(self, client):
         assert client.fix_floats("") is None
     
+    ''' fix ints tests '''
     def test_fix_int_number(self, client):
         assert client.fix_ints("100") == 100
 
     def test_fix_int_None(self, client):
         assert client.fix_floats("") is None
     
+    ''' fix rows tests '''
     def test_fix_rows(self, client, filled_row):
         a = client.fix_rows(filled_row)
         assert isinstance(a, TrafficObservation)
@@ -136,6 +138,7 @@ class TestAPI:
         a = client.fix_rows(filled_row)
         assert a.avg_speed == 63
 
+    ''' mock tests '''
     @patch("webtris_client.requests.get")
     def test_func_returns_list(self, mock_get, client, succesful_mock_response):
         mock_get.return_value = succesful_mock_response
@@ -157,7 +160,7 @@ class TestAPI:
 
 
 class TestSingleSite:
-    
+    ''' Pytest Fixtures for SingleSite '''
     @pytest.fixture
     def sample(self):
         recordings = [
@@ -172,7 +175,8 @@ class TestSingleSite:
     def empty_sample(self):
         return SingleSite(site_id=461, site_name="M25/4432A", traffic_stats=[])
     
-    def test_avearge_speed(self, sample):
+    ''' Average Speed tests '''
+    def test_average_speed(self, sample):
         a = sample.average_speed()
         assert round(a, 2) == 61.67
     
@@ -180,6 +184,7 @@ class TestSingleSite:
         a = empty_sample.average_speed()
         assert a is None
     
+    ''' Total # of cars tests '''    
     def test_number_of_cars(self, sample):
         a = sample.total_num_of_vehicles()
         assert a  == 550
@@ -188,6 +193,7 @@ class TestSingleSite:
         a = empty_sample.total_num_of_vehicles()
         assert a is None
     
+    ''' Hour tests '''
     def test_total_num_of_cars_hour(self, sample, empty_sample):
         a = sample.total_num_of_vehicles_per_hour(8)
         b = empty_sample.total_num_of_vehicles_per_hour(7)
@@ -200,6 +206,7 @@ class TestSingleSite:
         assert a == 8
         assert b is None
     
+    ''' Iteration and Length tests '''
     def test_iter_returns_TrafficObservation(self, sample):
          for observation in sample:
             assert isinstance(observation, TrafficObservation)
