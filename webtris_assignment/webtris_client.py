@@ -110,7 +110,7 @@ class SingleSite():
         self.traffic_stats = traffic_stats
 
     def load_from_client(self, client: API, day: date) -> None: #This function is simply just getting the API daat
-        '''  '''
+        ''' Set client as our API class and run get_daily_data to get our API data to use in a list'''
         self.traffic_stats = client.get_daily_data(self.site_id, day)
         #Here we arelling the computer to use the client(which is the WebtisAPI class) to run the get_daily_data method that we made earlier 
 
