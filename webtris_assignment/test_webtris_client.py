@@ -173,10 +173,11 @@ class TestAPI:
     def test_error_handling(self, mock_get, client):
         mock_get.side_effect = Timeout("Connection Timed out")
         a = client.get_json_data({})
-        assert a is None
+        assert a  == []
     '''
     From out lecture notes, we leanrt to use side_effect to make requests.get raise an exception instead of returning a reponse
-    This test tests that our Timeout block in the get_json_data() function catches the error and returns None instead of crashing
+    This test tests that our Timeout block in the get_json_data() function catches the error and returns None instead of crashing. 
+    WE are returning an emptuy list because we want our functions to handle exceptions properly by reuturning a empty list. 
     '''
 
 
@@ -254,4 +255,4 @@ class TestSingleSite:
         assert len(a) == 2
         assert b == []
     #Here we are checking that if we put a specifc hour we should get 2 recordings from that hour
-    #We are also checking from the empy fixture and making sure that it returns an empty list. 
+    #We are also checking from the empy fixture and making sure that it returns an empty list.

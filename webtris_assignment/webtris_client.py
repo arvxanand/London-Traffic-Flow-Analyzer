@@ -45,13 +45,8 @@ class API():
             #The timeout is there to say that if this doesnt run after 10 seconds then raise an error
             response.raise_for_status()
             return response.json() #From the notes, this Converts 4xx/5xx status codes into exceptions so that we can see what they are 
-        except Timeout:
-            print("Timeout error. Try again later") #First do Timeout because it is a specific error
-        except HTTPError as e:
-            print(f"HTTP error occurred: {e.response.status_code}") 
-        except RequestException as e: 
-            print(f"Network error: {e}") #I copy pasted these EXcpetions from the lecture notes but I undertsnad what each of them do and thier usefullness
-    
+        except (Timeout, HTTPError, RequestException):
+            return [] #returning an empty list and raisining any exceptions. 
     #Values like avg mph in the example are strings or some values can be empty strings. 
     def fix_floats(self, value: str) -> float | None:
         ''' Here we are converting any float strings into actual floats or if the value is empty we return None '''
