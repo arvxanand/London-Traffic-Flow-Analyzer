@@ -35,4 +35,9 @@ class Graph:
         
         return self.road_system[node]
     
+    def __str__(self) -> str:
+        a = ""
+        for node, neighbours in self.road_system.items():
+            a += f"{node} -> {neighbours}\n"
+        return a
     
