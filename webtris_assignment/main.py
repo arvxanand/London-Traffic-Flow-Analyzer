@@ -19,54 +19,55 @@ site.load_from_client(client, date(2026, 1, 3))
 
 
 #=========================================DO NOT CHANGE CODE BELOW===========================================================
+if __name__ == '__main__':
 
-#Just to make it visually easier to read in the terminal
-print("=" * 65) 
+    #Just to make it visually easier to read in the terminal
+    print("=" * 65) 
 
-#This is showing many records we got data from 
-print(f"Total number of records: {site.__len__()}")
+    #This is showing many records we got data from 
+    print(f"Total number of records: {site.__len__()}")
 
-#Here we are finding out rhe average speed of that specific day
-#We are also accounting for error handling
-if site.average_speed() is not None:
-    print(f"Average speed for the day: {site.average_speed()} mph")
-else:
-    print("No Average speed data found!")
+    #Here we are finding out rhe average speed of that specific day
+    #We are also accounting for error handling
+    if site.average_speed() is not None:
+        print(f"Average speed for the day: {site.average_speed()} mph")
+    else:
+        print("No Average speed data found!")
 
-#Here we are finding the total number of vehicles for this specific day
-#Again we are accounting for any error handling that we might face
-if site.total_num_of_vehicles() is not None:
-    print(f"Total number of vehicles for the day: {site.total_num_of_vehicles()}")
-else:
-    print("No data found for total number of vehicles for this day!")
+    #Here we are finding the total number of vehicles for this specific day
+    #Again we are accounting for any error handling that we might face
+    if site.total_num_of_vehicles() is not None:
+        print(f"Total number of vehicles for the day: {site.total_num_of_vehicles()}")
+    else:
+        print("No data found for total number of vehicles for this day!")
 
-#Here we a showing the peak hour
-#Again we are doing error handling but we also doing "or 0" to account for if the hour 
-peak = site.peak_hour() or 0
-if site.peak_hour() is not None:
-    print(f"Peak Hour: {peak}:00 to {peak+1}:00")
-else:
-    print("Peak Hour not found")
+    #Here we a showing the peak hour
+    #Again we are doing error handling but we also doing "or 0" to account for if the hour 
+    peak = site.peak_hour() or 0
+    if site.peak_hour() is not None:
+        print(f"Peak Hour: {peak}:00 to {peak+1}:00")
+    else:
+        print("Peak Hour not found")
 
-#Here we are orinting the average speed of the cars during the peak hour we found earlier
-if site.average_speed_per_hour(peak) is not None:
-    print(f"Average speed during peak hour: {site.average_speed_per_hour(peak)} mph")
+    #Here we are orinting the average speed of the cars during the peak hour we found earlier
+    if site.average_speed_per_hour(peak) is not None:
+        print(f"Average speed during peak hour: {site.average_speed_per_hour(peak)} mph")
 
-#Here we are printing the total num of cars during the peak hour we found earloer
-if site.total_num_of_vehicles_per_hour(peak) is not None:
-    print(f"Total number of vehicles during peak hour: {site.total_num_of_vehicles_per_hour(peak)}")
+    #Here we are printing the total num of cars during the peak hour we found earloer
+    if site.total_num_of_vehicles_per_hour(peak) is not None:
+        print(f"Total number of vehicles during peak hour: {site.total_num_of_vehicles_per_hour(peak)}")
 
-#Just to make it visually easier to read in the terminal
-print("=" * 65) 
+    #Just to make it visually easier to read in the terminal
+    print("=" * 65) 
 
-print("\nAll records for hour 8 (8am-9am):")
-for a in site.record_for_certain_hour(8):
-    print(a)
+    print("\nAll records for hour 8 (8am-9am):")
+    for a in site.record_for_certain_hour(8):
+        print(a)
 
-#Just to make it visually easier to read in the terminal
-print("=" * 65) 
+    #Just to make it visually easier to read in the terminal
+    print("=" * 65) 
 
-#Here we printing out all the records we got for the date we chose
-print("\nAll the records for a certain date:")
-for a in site:
-    print(a)
+    #Here we printing out all the records we got for the date we chose
+    print("\nAll the records for a certain date:")
+    for a in site:
+        print(a)
