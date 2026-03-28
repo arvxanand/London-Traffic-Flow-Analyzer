@@ -3,6 +3,8 @@ from webtris_assignment.webtris_client import API
 class Graph:
     def __init__(self, road_system: dict):
         self.road_system = road_system
+    #create an init function with a road system dictionary
+    #The keys for the dict are the names of the node (ex. J7) and the values are the dictionaries of any conecting nodes and weights
     '''
     Here we are using a dictionary to store the road system. 
     Each place is a key (ex. J7). For example J7 is the place we can leave from.
@@ -19,25 +21,30 @@ class Graph:
         #We are checking that exists first because we dont want to make a new one accidently and delete out any of the edges that were apart of it
     
     def add_edges(self, start_node: str, end_node: str, weight: float): #Edges are the roads between two places. EX: Road between J7 and J8
+        #Raises an error if either of the nodes dont exist in the graph
         if start_node not in self.road_system:
             raise ValueError(f"{start_node} not in list.")
         if end_node not in self.road_system:
             raise ValueError(f"{end_node} not in list")
-        #I am raising errors here because....
         
         self.road_system[start_node][end_node] = weight
         '''
         When we do 'self.road_system[road] = {}' this gets created: "J7": {}
-        Now when we do the [][] = weight above, we then create {"J7": {"J8": 45.2}}
+        Now when we do the [][] = weight above, we then go inside J7's dictionary and add the destination 
+        and average speed into it, giving us: {"J7": {"J8": 45.2}}
+        This means from J7 you can travel to J8 at an average speed of 45.2mph.
         '''
 
     def get_all_roads(self, node: str) -> list:
+        ''' Returns all the connecting nodes and the weights for a certain node '''
         if node not in self.road_system:
-            raise ValueError()
+            raise ValueError(f"{node} not in list.")
+        #Raises an error if the node does not exist
         
         return self.road_system[node]
     
     def __str__(self) -> str:
+        ''' Returns a string of the graph '''
         a = ""
         for node, neighbours in self.road_system.items():
             a += f"{node} -> {neighbours}\n"
