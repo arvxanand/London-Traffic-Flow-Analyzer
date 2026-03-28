@@ -1,3 +1,5 @@
+from webtris_assignment.webtris_client import API
+
 class Graph:
     def __init__(self, road_system: dict):
         self.road_system = road_system

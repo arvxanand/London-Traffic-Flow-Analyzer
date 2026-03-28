@@ -1,6 +1,6 @@
 from datetime import date, time
 import pytest
-from webtris_client import TrafficObservation, API, SingleSite
+from .webtris_client import TrafficObservation, API, SingleSite
 from unittest.mock import patch, Mock
 from requests.exceptions import Timeout
 

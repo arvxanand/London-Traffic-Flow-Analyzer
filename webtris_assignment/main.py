@@ -1,4 +1,4 @@
-from webtris_client import API, SingleSite
+from .webtris_client import API, SingleSite
 from datetime import date
 
 #Here we are creating the client class to use
