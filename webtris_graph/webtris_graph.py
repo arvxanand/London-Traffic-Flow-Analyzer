@@ -49,5 +49,14 @@ class Graph:
         ''' Returns a string of the graph '''
         a = ""
         for node, neighbours in self.road_system.items():
-            return f"{node} -> {neighbours}\n"
+            a += f"{node} -> {neighbours}\n"
         return a
+
+if __name__ == "__main__":
+    sample_road_system = {
+        "J7": {"J8": 45.2},
+        "J8": {"J9": 30.1},
+        "J9": {}
+    }
+    g = Graph(sample_road_system)
+    print(g)
