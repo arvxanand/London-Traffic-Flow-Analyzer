@@ -1,5 +1,6 @@
 from webtris_assignment.webtris_client import API, SingleSite
 from datetime import date
+import time
 
 class Graph:
     def __init__(self, road_system: dict):
@@ -84,3 +85,18 @@ EDGE_DISTANCES = {
 }
 
 ROUTE_B_HARDCODED_MINUTES = 20.0
+
+def get_average_speed(sensor_ids: list, client: API, day: date) -> float | None:
+    all_speeds = []
+    for id in sensor_ids:
+        s = SingleSite(site_id=id, site_name=str(id), traffic_stats=[])
+        s.load_from_client(client, day)
+        avg_speed = s.average_speed()
+        if avg_speed is not None:
+            all_speeds.append(avg_speed)
+        time.sleep(2)
+    
+    if not all_speeds:
+        return None
+    return sum(all_speeds) / len(all_speeds)
+
