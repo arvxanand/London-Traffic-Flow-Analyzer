@@ -87,16 +87,21 @@ EDGE_DISTANCES = {
 ROUTE_B_HARDCODED_MINUTES = 20.0
 
 def get_average_speed(sensor_ids: list, client: API, day: date) -> float | None:
-    all_speeds = []
+    ''' Getting data from WebtrisAPI and finding the avg speed of the '''
+    all_speeds = [] #create an empty list that we will add the speeds to
     for id in sensor_ids:
-        s = SingleSite(site_id=id, site_name=str(id), traffic_stats=[])
+        s = SingleSite(site_id=id, site_name=str(id), traffic_stats=[]) #we create a singleSite object for the sensor and then we load the data from that day
         s.load_from_client(client, day)
-        avg_speed = s.average_speed()
+        avg_speed = s.average_speed() #one sensor mightt have multiple recording of speed so we get the avg of all of them and turn them into one number
         if avg_speed is not None:
-            all_speeds.append(avg_speed)
-        time.sleep(2)
+            all_speeds.append(avg_speed) #If data is not None, add that one number to the list where we will later find the avg of them 
+        time.sleep(2) #dataset said to add 2 secone delays between API requets so we dont get blocked
     
     if not all_speeds:
         return None
-    return sum(all_speeds) / len(all_speeds)
+    return sum(all_speeds) / len(all_speeds) #average all the speeds to get one number that we will use to calcuate the travel time
+    '''
+    For example if J7 to J12 has has multiple senors like [138, 144, ... ]and they return random speeds like [62, 36, 48....],
+    We can then find the avg speed of all those speeds to find the time it takes to get from node to node. 
+    '''
 
