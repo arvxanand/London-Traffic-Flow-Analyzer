@@ -95,6 +95,10 @@ class API():
         #The resason we have parameters is because the get_json_data method we made earlier attaches the paramaters to the URL. 
         json_data = self.get_json_data(parameters)
 
+        if not isinstance(json_data, dict) or "Rows" not in json_data:
+            return []
+        #If it doesnt have a dictionary or doesnt have "Rows" in it just return an empty list
+
         traffic_data = [] #This is an empty list htat we are going to use to store all the Traffic Observations objects inside. 
         for info in json_data["Rows"]: #loop through each of the traffic record the API gives us from the "Rows" part of the API. the ["Rows"] is they key as to what we want
             a = self.fix_rows(info) #So after we get all the things like site name and avg speed we turn all of that into Traffic Observation objects
