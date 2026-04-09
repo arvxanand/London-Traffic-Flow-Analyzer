@@ -53,15 +53,6 @@ class Graph:
             a += f"{node} -> {neighbours}\n"
         return a
 
-if __name__ == "__main__":
-    sample_road_system = {
-        "J7": {"J8": 45.2},
-        "J8": {"J9": 30.1},
-        "J9": {}
-    }
-    g = Graph(sample_road_system)
-    print(g)
-
 EDGE_SENSORS = {
     "7-12": [138, 144, 479, 544, 547, 598, 699, 752, 778, 885,
 1069, 1135, 1221, 1270, 1442, 1479, 1914, 1990, 2005, 2089,
@@ -120,7 +111,9 @@ def make_road_system_graph(day: date) -> Graph:
         speed = get_average_speed(sensors, client, day) #call the function that gets the speed from every snesor and averages them
         if speed is None or speed == 0:
             #Handle missing data or zero speed data
-            travel_time = None
+            speed = 30
+            print(f"NO DATA for {start_node} -> {end_node} (Using 30mph as placeholder)")
+            #If no sensor data came back then we use 30mph as a placeholder so the edge still gets added to the graph
         else:
             travel_time = (distance / speed) * 60
         if travel_time is not None:
@@ -136,3 +129,9 @@ def make_road_system_graph(day: date) -> Graph:
     #reutns the fully built graoh with all the nodes and edges 
     return graph
     
+if __name__ == "__main__":
+    day = date(2026, 1, 19)  # the date your teacher said works
+    print("Building graph from WebTRIS data...\n")
+    graph = make_road_system_graph(day)
+    print("\n=== Full Graph ===")
+    print(graph)
