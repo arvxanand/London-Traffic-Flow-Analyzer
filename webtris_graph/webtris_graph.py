@@ -105,3 +105,40 @@ def get_average_speed(sensor_ids: list, client: API, day: date) -> float | None:
     We can then find the avg speed of all those speeds to find the time it takes to get from node to node. 
     '''
 
+def make_road_system(day: date) -> Graph:
+    client = API()
+    graph = Graph({})
+
+    for node in ["J7", "J12", "J13", "J14", "Heathrow"]:
+        graph.add_node(node)
+    
+    #Edge 1 from J7 to J12 (23 miles + 57 sensors)
+    edge1_distance = EDGE_DISTANCES["7-12"]
+    edge1_sensors = EDGE_SENSORS["7-12"]
+    speed = get_average_speed(edge1_sensors, client, day)
+    if speed is None or speed == 0:
+        travel_time = None
+    else:
+        travel_time = (edge1_distance / speed) * 60
+
+    if travel_time is not None:
+        rounded_travel_time = round(travel_time, 2)
+
+    graph.add_edges("J7", "J12", rounded_travel_time)
+    print(f"J7 -> J12: {rounded_travel_time} minutes (average speed: {speed} mph)")
+
+    #Edge 2 from J12 to J13 (3 miles + 9 sensors)
+    edge2_distance = EDGE_DISTANCES["12-13"]
+    edge2_sensors = EDGE_SENSORS["12-13"]
+    speed = get_average_speed(edge2_sensors, client, day)
+    if speed is None or speed == 0:
+        travel_time = None
+    else:
+        travel_time = (edge2_distance / speed) * 60
+    if travel_time is not None:
+        rounded_travel_time = round(travel_time, 2)
+    graph.add_edges("J12", "J13", rounded_travel_time)
+    print(f"J12 -> J13: {rounded_travel_time} mph (average speed: {speed} mph)")
+
+    return graph
+    
