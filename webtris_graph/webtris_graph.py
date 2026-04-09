@@ -119,10 +119,12 @@ def make_road_system_graph(day: date) -> Graph:
         sensors = EDGE_SENSORS[key] #get a list of sensors from our sensors dictionary 
         speed = get_average_speed(sensors, client, day) #call the function that gets the speed from every snesor and averages them
         if speed is None or speed == 0:
+            #Handle missing data or zero speed data
             travel_time = None
         else:
             travel_time = (distance / speed) * 60
         if travel_time is not None:
+            #Check if value exists because you cant round a 0 or a value that doesnt exist
             rounded_travel_time = round(travel_time, 2)
             graph.add_edges(start_node, end_node, rounded_travel_time)
         print(f"{start_node} -> {end_node}: {rounded_travel_time} mins (avg speed {speed} mph)")
@@ -131,5 +133,6 @@ def make_road_system_graph(day: date) -> Graph:
     graph.add_edges("J12", "Heathrow", ROUTE_B_HARDCODED_MINUTES)
     print("J12 -> Heathrow: 20.0 mins (hardcoded, no sensors)")
 
+    #reutns the fully built graoh with all the nodes and edges 
     return graph
     
