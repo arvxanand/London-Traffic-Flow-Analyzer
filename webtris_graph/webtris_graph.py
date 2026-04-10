@@ -136,17 +136,33 @@ def calc_path_weight(graph: Graph, path: list) -> float:
         start_node = path[i]
         end_node = path[i+1]
         all_roads = graph.get_all_roads(start_node)
-        weight = total + all_roads[end_node]
-    return round(weight, 2)
+        total += all_roads[end_node]
+    return round(total, 2)
 
 ''' BFS ALGORITHIM'''
-def bfs(graph: Graph, start_node: str, end_node: str):
-    #route objects holds the paths that we havent gone to yet. we have to start with one node which is our starting node which is J7
-    
+def bfs(graph: Graph, first_node: str, end_node: str):
+    queue = deque([[first_node]])
+    visited = set()
+    visited.add(first_node)
+
+    while queue:
+        path = queue.popleft()
+        current = path[-1]
+
+        if current == end_node:
+            time = calc_path_weight(graph, path)
+            return path, time
+        
+        for neighbour in graph.get_all_roads(current):
+            if neighbour not in visited:
+                visited.add(neighbour)
+                new_path = path + [neighbour]
+                queue.append(new_path)
+    return None, None
 
     
 if __name__ == "__main__":
-    day = date(2026, 1, 19)  # the date your teacher said works
+    day = date(2026, 1, 19)
     print("Building graph from WebTRIS data...\n")
     graph = make_road_system_graph(day)
     print("\n=== Full Graph ===")
