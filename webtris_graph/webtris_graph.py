@@ -130,19 +130,19 @@ def make_road_system_graph(day: date) -> Graph:
     #reutns the fully built graoh with all the nodes and edges 
     return graph
 
-def calc_path_weight(graph, path):
+def calc_path_weight(graph: Graph, path: list) -> float:
     total = 0
     for i in range(len(path) - 1):
-        start = path[i]
-        end = path[i+1]
-        total = total + graph.get_all_roads(start)[end]
-    return round(total, 2)
+        start_node = path[i]
+        end_node = path[i+1]
+        all_roads = graph.get_all_roads(start_node)
+        weight = total + all_roads[end_node]
+    return round(weight, 2)
 
 ''' BFS ALGORITHIM'''
-def bfs(graph, start, end):
+def bfs(graph: Graph, start_node: str, end_node: str):
     #route objects holds the paths that we havent gone to yet. we have to start with one node which is our starting node which is J7
-    queue = deque(start)
-    pass
+    
 
     
 if __name__ == "__main__":
