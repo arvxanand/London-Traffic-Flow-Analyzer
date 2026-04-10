@@ -1,6 +1,7 @@
 from webtris_assignment.webtris_client import API, SingleSite
 from datetime import date
 import time
+from collections import deque
 
 class Graph:
     def __init__(self, road_system: dict):
@@ -128,6 +129,21 @@ def make_road_system_graph(day: date) -> Graph:
 
     #reutns the fully built graoh with all the nodes and edges 
     return graph
+
+def calc_path_weight(graph, path):
+    total = 0
+    for i in range(len(path) - 1):
+        start = path[i]
+        end = path[i+1]
+        total = total + graph.get_all_roads(start)[end]
+    return round(total, 2)
+
+''' BFS ALGORITHIM'''
+def bfs(graph, start, end):
+    #route objects holds the paths that we havent gone to yet. we have to start with one node which is our starting node which is J7
+    queue = deque(start)
+    pass
+
     
 if __name__ == "__main__":
     day = date(2026, 1, 19)  # the date your teacher said works
