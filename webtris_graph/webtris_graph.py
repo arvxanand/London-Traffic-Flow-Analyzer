@@ -141,6 +141,7 @@ def calc_path_weight(graph: Graph, path: list) -> float:
 
 ''' BFS ALGORITHIM'''
 def bfs(graph: Graph, first_node: str, end_node: str):
+    ''' FIFO (First in First out) '''
     queue = deque([[first_node]])
     visited = set()
     visited.add(first_node)
@@ -159,6 +160,31 @@ def bfs(graph: Graph, first_node: str, end_node: str):
                 new_path = path + [neighbour]
                 queue.append(new_path)
     return None, None
+
+''' DFS ALGORITHIM '''
+def dfs(graph: Graph, first_node: str, end_node: str, visited = None, path = None): #first time the function is called visited & path dont exist
+    ''' LIFO (Last in First Out)'''
+    if visited is None:
+        visited = set()
+    if path is None:
+        path = [first_node]
+    
+
+    visited.add(first_node) #set the current node we are on as visited
+    if first_node == end_node:
+        time = calc_path_weight(graph, path)
+        return path, time 
+    #if we get to our final destionation we return the path we got and the time it took based on our previous helper function
+
+    for neighbour in graph.get_all_roads(first_node):
+        if neighbour not in visited:
+            new_path = path + [neighbour]
+            result = dfs(graph, neighbour, end_node, visited, new_path)
+            
+            if result is not None:
+                return result
+    return None, None
+    
 
     
 if __name__ == "__main__":
