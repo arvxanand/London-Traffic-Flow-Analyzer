@@ -193,3 +193,15 @@ if __name__ == "__main__":
     graph = make_road_system_graph(day)
     print("\n=== Full Graph ===")
     print(graph)
+
+    bfs_path, bfs_time = bfs(graph, "J7", "Heathrow")
+    print(f"Path: {' -> '.join(bfs_path)}")
+    print(f"Number of nodes: {len(bfs_path)}")
+    print(f"Total time: {bfs_time} mins")
+
+    dfs_result = dfs(graph, "J7", "Heathrow")
+    if dfs_result:
+        dfs_path, dfs_time = dfs_result
+        print(f"Path: {' -> '.join(dfs_path)}")
+        print(f"Number of nodes: {len(dfs_path)}")
+        print(f"Total time: {dfs_time} mins")
