@@ -31,3 +31,8 @@ class Test_Graph_Class:
         assert set(roads) == {"A", "B", "C", "D"}
         assert set(roads) != {"A", "B", "C", "E"}
 
+    def test_add_missing_edges(self):
+        g = Graph({})
+        g.add_node("A")
+        with pytest.raises(Exception):
+            g.add_edges("A", "Z", 10)
