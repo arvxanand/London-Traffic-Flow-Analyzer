@@ -36,3 +36,29 @@ class Test_Graph_Class:
         g.add_node("A")
         with pytest.raises(Exception):
             g.add_edges("A", "Z", 10)
+
+class Test_Calc_Path_Weight:
+    @pytest.fixture
+    def simple_graph(self):
+        g = Graph({})
+        g.add_node("A")
+        g.add_node("B")
+        g.add_node("C")
+        g.add_node("D")
+        g.add_edges("A", "B", 5)
+        g.add_edges("B", "D", 10)
+        g.add_edges("B", "C", 3)
+        g.add_edges("C", "D", 2)
+        return g
+
+    def test_path_weight(self, simple_graph):
+        path = ["A", "B", "C", "D"]
+        assert calc_path_weight(simple_graph, path) == 10
+    
+    def test_edge_weight(self, simple_graph):
+        path = ["A", "B"]
+        assert calc_path_weight(simple_graph, path) == 5
+
+    def test_one_node_weight(self, simple_graph):
+        path = ["A"]
+        assert calc_path_weight(simple_graph, path) == 0
