@@ -89,3 +89,45 @@ class Test_BFS:
         path, time = bfs(simple_graph, "A", "A")
         assert path == ["A"]
         assert time == 0
+
+class Test_DFS:
+    ''' Tests for Depth First Search. Finds a path but depends on the dictionary order '''
+    @pytest.fixture
+    def simple_graph(self):
+        g = Graph({})
+        g.add_node("A")
+        g.add_node("B")
+        g.add_node("C")
+        g.add_node("D")
+        g.add_edges("A", "B", 5)
+        g.add_edges("B", "D", 10)
+        g.add_edges("B", "C", 3)
+        g.add_edges("C", "D", 2)
+        return g
+    
+    @pytest.fixture
+    def reversed_graph(self):
+        ''' Same graph as simple_graph but B -> C is added before B -> D '''
+        g = Graph({})
+        g.add_node("A")
+        g.add_node("B")
+        g.add_node("C")
+        g.add_node("D")
+        g.add_edges("A", "B", 5)
+        g.add_edges("B", "C", 3) #C added BEFORE D in this fixture
+        g.add_edges("B", "D", 10)
+        g.add_edges("C", "D", 2)
+        return g
+
+    def test_depending_on_dict_order(self, simple_graph, reversed_graph):
+        ''' DFS should return differnt path when dictionary order changes '''
+        path1, time = dfs(simple_graph, "A", "D", visited=set(), path=[])
+        path2, time = dfs(reversed_graph, "A", "D", visited=set(), path=[])
+        assert path1 != path2
+
+    def test_dfs_gives_valid_path(self, simple_graph):
+        ''' Checking that this is valid path to go on '''
+        path, time = dfs(simple_graph, "A", "D", visited=set(), path=[])
+        for i in range(len(path) - 1):
+            neighbours = simple_graph.get_all_roads(path[i])
+            assert path[i + 1] in neighbours
