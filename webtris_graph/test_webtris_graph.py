@@ -62,3 +62,30 @@ class Test_Calc_Path_Weight:
     def test_one_node_weight(self, simple_graph):
         path = ["A"]
         assert calc_path_weight(simple_graph, path) == 0
+
+class Test_BFS:
+    ''' Tests for breatdth first search. Should find the path with the fewest amount of steps '''
+    @pytest.fixture
+    def simple_graph(self):
+        g = Graph({})
+        g.add_node("A")
+        g.add_node("B")
+        g.add_node("C")
+        g.add_node("D")
+        g.add_edges("A", "B", 5)
+        g.add_edges("B", "D", 10)
+        g.add_edges("B", "C", 3)
+        g.add_edges("C", "D", 2)
+        return g
+    
+    def test_bfs_fewest_steps(self, simple_graph):
+        ''' BFS from A to D should return A->B->D not A->B->C->D which is longer '''
+        path, time = bfs(simple_graph, "A", "D")
+        assert path == ["A", "B", "D"]
+        assert time == 15 #BFS Does not care about weigjt so it should return 15 insstead of the cheaper route which is only 10
+    
+    def test_bfs_start_sameAs_end(self, simple_graph):
+        '''When the start and end node are the same, BFS should return time as 0 '''
+        path, time = bfs(simple_graph, "A", "A")
+        assert path == ["A"]
+        assert time == 0
