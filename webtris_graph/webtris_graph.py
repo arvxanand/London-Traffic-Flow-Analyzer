@@ -17,6 +17,14 @@ class Graph:
         #   "J7":  {"J8", 45.2}, #From J7 we can only go to J8 and the road that takes us will take us 45.2 minutes. 
     }
     '''
+    def __eq__(self, other):
+        return isinstance(other, Graph) and self.road_system == other.road_system
+    
+    def __hash__(self):
+        return id(self)
+
+    def __repr__(self):
+        return f"Graph(nodes={len(self.road_system)})"
     
     def add_node(self, road: str) -> None: #nodes are the physcial places on the map like Gatwick, J7, J8....
         if road not in self.road_system:
@@ -184,7 +192,7 @@ def dfs(graph: Graph, first_node: str, end_node: str, visited = None, path = Non
             if result is not None:
                 return result
     return None, None
-    
+
 
     
 if __name__ == "__main__":
