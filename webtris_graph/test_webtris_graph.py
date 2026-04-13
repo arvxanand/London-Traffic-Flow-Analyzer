@@ -1,7 +1,6 @@
 import pytest
 from .webtris_graph import Graph, calc_path_weight, dfs, bfs
 
-
 class Test_Graph_Class:
     ''' Tests for the Graph class such as node and edge creation and any error handling '''
     @pytest.fixture
