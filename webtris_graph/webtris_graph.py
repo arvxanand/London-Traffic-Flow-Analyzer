@@ -2,6 +2,7 @@ from webtris_assignment.webtris_client import API, SingleSite
 from datetime import date
 import time
 from collections import deque
+import heapq
 
 class Graph:
     def __init__(self, road_system: dict):
@@ -193,6 +194,36 @@ def dfs(graph: Graph, first_node: str, end_node: str, visited = None, path = Non
                 return result
     return None, None
 
+''' Dijkstra's Algorithim '''
+def Dijkstra(graph: Graph, start: str, end: str):
+    cheapest_times = {start: 0}
+    previous_node = {}
+    visited = set()
+    pq = [(0, start)]
+    
+    while pq:
+        current_cost , current = heapq.heappop(pq)
+
+        if current in visited:
+            continue
+        visited.add(current)
+
+        if current == end:
+            path = make_cost(previous_node, start, end)
+            return path, current_cost
+        
+        for neighbour, weight in graph.get_all_roads(current).items():
+            if neighbour in visited:
+                new_cost = current_cost + weight
+
+                if neighbour not in cheapest_times or new_cost < cheapest_times[neighbour]:
+                    cheapest_times[neighbour] = new_cost
+                    previous_node[neighbour] = current
+                    heapq.heappush(pq, (new_cost, neighbour))
+    return None, None
+
+def make_cost(previous_node, start, end):
+    pass
 
     
 if __name__ == "__main__":
