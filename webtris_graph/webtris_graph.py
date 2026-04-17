@@ -240,7 +240,16 @@ def Dijkstra(graph: Graph, start: str, end: str):
     return None, None #If we never rach the end node, return None for both path and cost
 
 def make_cost(previous_node, start, end):
-    pass
+    path = []
+    current = end
+    while current != start:
+        path.append(current)
+        if current not in previous_node:
+            return None
+        current = previous_node[current]
+    path.append(start)
+    path.reverse()
+    return path
 
     
 if __name__ == "__main__":
