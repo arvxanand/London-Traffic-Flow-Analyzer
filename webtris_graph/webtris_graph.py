@@ -255,20 +255,36 @@ def build_path(previous_node, start, end):
 
     
 if __name__ == "__main__":
-    day = date(2026, 1, 19)
+    day = date(2026, 1, 19) #Date that is most likely to have all the data
     print("Building graph from WebTRIS data...\n")
     graph = make_road_system_graph(day)
-    print("\n=== Full Graph ===")
+    print("\nFull Graph:")
     print(graph)
 
     bfs_path, bfs_time = bfs(graph, "J7", "Heathrow")
-    print(f"Path: {' -> '.join(bfs_path)}")
-    print(f"Number of nodes: {len(bfs_path)}")
-    print(f"Total time: {bfs_time} mins")
+    if bfs_path:
+        print("BFS Path:")
+        for node in bfs_path:
+            print(node, end=" -> ")
+        print()
+        print(f"Number of nodes: {len(bfs_path)}")
+        print(f"Total time: {bfs_time} mins\n")
 
     dfs_result = dfs(graph, "J7", "Heathrow")
     if dfs_result:
         dfs_path, dfs_time = dfs_result
-        print(f"Path: {' -> '.join(dfs_path)}")
+        print("DFS Path:")
+        for node in dfs_path:
+            print(node, end=" -> ")
+        print()
         print(f"Number of nodes: {len(dfs_path)}")
-        print(f"Total time: {dfs_time} mins")
+        print(f"Total time: {dfs_time} mins\n")
+        
+    dijkstra_path, dijkstra_time = Dijkstra(graph, "J7", "J12")
+    if dijkstra_path:
+        print("Dijkstra's Path:")
+        for node in dijkstra_path:
+            print(node, " -> ")
+        print()
+        print(f"Number of nodes {len(dijkstra_path)}")
+        print(f"Total time: {dijkstra_time} mins")
