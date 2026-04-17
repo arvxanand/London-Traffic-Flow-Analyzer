@@ -211,31 +211,33 @@ def dfs(graph: Graph, first_node: str, end_node: str, visited = None, path = Non
 
 ''' Dijkstra's Algorithim '''
 def Dijkstra(graph: Graph, start: str, end: str):
-    cheapest_times = {start: 0}
-    previous_node = {}
-    visited = set()
-    pq = [(0, start)]
+    cheapest_times = {start: 0} #Dictionary to store the cheapest time to reach node
+    previous_node = {} #Dicitionary to change the path later
+    visited = set() #Set the keep track of visited nodes
+    pq = [(0, start)] #Priority queue to pcik the node with the smallest cost 
     
     while pq:
-        current_cost , current = heapq.heappop(pq)
+        current_cost , current = heapq.heappop(pq) #Get the node with the smallest cost
 
-        if current in visited:
+        if current in visited: #If we have already visited this node then skip it
             continue
-        visited.add(current)
+        visited.add(current) #mark this current node as visited
 
-        if current == end:
-            path = make_cost(previous_node, start, end)
-            return path, current_cost
+        if current == end: #if we have reached the desitination node
+            path = make_cost(previous_node, start, end) #Change the path from start to end
+            return path, round(current_cost, 2) #retuen the path and the total cost rounded to 2 decimal places
         
-        for neighbour, weight in graph.get_all_roads(current).items():
-            if neighbour in visited:
-                new_cost = current_cost + weight
+        for neighbour, weight in graph.get_all_roads(current).items(): #Look at al the neighbours and thier edge weights
+            if neighbour not in visited: #Only look at neighbours we havent visited yet
+                new_cost = current_cost + weight #find the total cost to reach the neighbour
 
+                #if this is the first time visiting the neighbour or if we find a cheaper path:
                 if neighbour not in cheapest_times or new_cost < cheapest_times[neighbour]:
-                    cheapest_times[neighbour] = new_cost
-                    previous_node[neighbour] = current
-                    heapq.heappush(pq, (new_cost, neighbour))
-    return None, None
+                    cheapest_times[neighbour] = new_cost #Update the the cheapest time to reach the neighbour
+                    previous_node[neighbour] = current #Remeber how we got to this neighbour
+                    heapq.heappush(pq, (new_cost, neighbour)) #Then add the neighbour to the priority queue to check later
+
+    return None, None #If we never rach the end node, return None for both path and cost
 
 def make_cost(previous_node, start, end):
     pass
