@@ -140,13 +140,17 @@ def make_road_system_graph(day: date) -> Graph:
     return graph
 
 def calc_path_weight(graph: Graph, path: list) -> float:
-    total = 0
+    total_time = 0
+    # we start with the total time as 0 
     for i in range(len(path) - 1):
         start_node = path[i]
         end_node = path[i+1]
+        #We look at each pair of nodes in the path (like J7 -> J12, J12 -> J13, etc)
         all_roads = graph.get_all_roads(start_node)
-        total += all_roads[end_node]
-    return round(total, 2)
+        #Get all the roads/edges that start from the current node
+        total_time += all_roads[end_node]
+        #Add the travel time from the start_node to the end_node to our total time
+    return round(total_time, 2) #Rertuen the total time rounded to 2 decimal places
 
 ''' BFS ALGORITHIM'''
 def bfs(graph: Graph, first_node: str, end_node: str):
