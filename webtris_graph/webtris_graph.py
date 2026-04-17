@@ -151,24 +151,29 @@ def calc_path_weight(graph: Graph, path: list) -> float:
 ''' BFS ALGORITHIM'''
 def bfs(graph: Graph, first_node: str, end_node: str):
     ''' FIFO (First in First out) '''
-    queue = deque([[first_node]])
-    visited = set()
-    visited.add(first_node)
+    queue = deque([[first_node]]) #We use a queue to track all of the paths we can take. We start with the path that only has the fist node in it.
+    visited = set() #create an visited object as a set to keep track of all the nodes that we have already visited
+    visited.add(first_node) #We add the starting node to visited to we dont go back to ti again
 
     while queue:
-        path = queue.popleft()
-        current = path[-1]
+        path = queue.popleft() 
+        #pop/take the first path from the queue
+        #for eaxmple if queue = [[J7], [J7, J12]] we take out [J7] first.
+        current = path[-1] 
+        #we then go to the last node in the current path. thats where we are right now. 
+        #So if path = [J7, J12] then current = J12 so we are now at J12
 
-        if current == end_node:
+        if current == end_node: #If we got to our destination, return the path and the total time it took
             time = calc_path_weight(graph, path)
             return path, time
         
-        for neighbour in graph.get_all_roads(current):
-            if neighbour not in visited:
-                visited.add(neighbour)
-                new_path = path + [neighbour]
-                queue.append(new_path)
-    return None, None
+        for neighbour in graph.get_all_roads(current): #Look at all the places we can go from the current node
+            if neighbour not in visited: #If we havent visited this place before
+                visited.add(neighbour) #mark it as visited
+                new_path = path + [neighbour] #we then create a new path that adds the neighbour to the current path
+                queue.append(new_path) #then add the new path the queue to look at later
+    return None, None #if we finish the loop and never find the end, then just return None
+    #write reuturn None, None because the bfs funtion is supposed to return two values which is the path and the total time. 
 
 ''' DFS ALGORITHIM '''
 def dfs(graph: Graph, first_node: str, end_node: str, visited = None, path = None): #first time the function is called visited & path dont exist
