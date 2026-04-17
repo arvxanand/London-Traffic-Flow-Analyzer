@@ -198,6 +198,3 @@ class SingleSite():
     def __iter__(self):
         return iter(self.traffic_stats) #Here we are returning an iterated list of observations which is just a list of the TrafficObservations class that
         #contains all the values we are pulling from the API. 7
-
-
-#Amputation in Data and Imputation 
