@@ -280,7 +280,7 @@ if __name__ == "__main__":
         print(f"Number of nodes: {len(dfs_path)}")
         print(f"Total time: {dfs_time} mins\n")
         
-    dijkstra_path, dijkstra_time = Dijkstra(graph, "J7", "J12")
+    dijkstra_path, dijkstra_time = Dijkstra(graph, "J7", "Heathrow")
     if dijkstra_path:
         print("Dijkstra's Path:")
         for node in dijkstra_path:
