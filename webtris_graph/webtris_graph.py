@@ -179,25 +179,31 @@ def bfs(graph: Graph, first_node: str, end_node: str):
 def dfs(graph: Graph, first_node: str, end_node: str, visited = None, path = None): #first time the function is called visited & path dont exist
     ''' LIFO (Last in First Out)'''
     if visited is None:
-        visited = set()
+        visited = set() #make a visited set to keep track of all the nodes that we have already visited
     if path is None:
-        path = [first_node]
+        path = [first_node] #start the path with the first node
     
 
     visited.add(first_node) #set the current node we are on as visited
+
     if first_node == end_node:
         time = calc_path_weight(graph, path)
         return path, time 
     #if we get to our final destionation we return the path we got and the time it took based on our previous helper function
 
-    for neighbour in graph.get_all_roads(first_node):
-        if neighbour not in visited:
-            new_path = path + [neighbour]
+    for neighbour in graph.get_all_roads(first_node): #look at all the places we can go from the current node
+        if neighbour not in visited: #if we havent visited this place before
+            new_path = path + [neighbour] #create a new path that adds a neighbour to the current path
+            # if path = [J7, J12] and neighbour = J13 then new_path = [J7, J12, J13]
+            # We use recursion to keep goong depper from this neighbour 
+            # This means tht we call dfs again but now our current node is the neighbour
             result = dfs(graph, neighbour, end_node, visited, new_path)
-            
+            # the recursive call willl keep going deeper until it either finds the end node or runs out of nodes
             if result is not None:
+            # if the correct path is found we then return that path
                 return result
     return None, None
+    #If we finish the loop and never fiond the end, then we return None, None
 
 ''' Dijkstra's Algorithim '''
 def Dijkstra(graph: Graph, start: str, end: str):
