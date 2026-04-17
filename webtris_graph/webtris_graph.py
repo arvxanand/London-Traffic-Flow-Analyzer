@@ -212,7 +212,7 @@ def dfs(graph: Graph, first_node: str, end_node: str, visited = None, path = Non
 ''' Dijkstra's Algorithim '''
 def Dijkstra(graph: Graph, start: str, end: str):
     cheapest_times = {start: 0} #Dictionary to store the cheapest time to reach node
-    previous_node = {} #Dicitionary to change the path later
+    came_from = {} #Dicitionary to change the path later
     visited = set() #Set the keep track of visited nodes
     pq = [(0, start)] #Priority queue to pcik the node with the smallest cost 
     
@@ -224,7 +224,7 @@ def Dijkstra(graph: Graph, start: str, end: str):
         visited.add(current) #mark this current node as visited
 
         if current == end: #if we have reached the desitination node
-            path = make_cost(previous_node, start, end) #Change the path from start to end
+            path = build_path(came_from, start, end) #Change the path from start to end
             return path, round(current_cost, 2) #retuen the path and the total cost rounded to 2 decimal places
         
         for neighbour, weight in graph.get_all_roads(current).items(): #Look at al the neighbours and thier edge weights
@@ -234,22 +234,24 @@ def Dijkstra(graph: Graph, start: str, end: str):
                 #if this is the first time visiting the neighbour or if we find a cheaper path:
                 if neighbour not in cheapest_times or new_cost < cheapest_times[neighbour]:
                     cheapest_times[neighbour] = new_cost #Update the the cheapest time to reach the neighbour
-                    previous_node[neighbour] = current #Remeber how we got to this neighbour
+                    came_from[neighbour] = current #Remeber how we got to this neighbour
                     heapq.heappush(pq, (new_cost, neighbour)) #Then add the neighbour to the priority queue to check later
 
     return None, None #If we never rach the end node, return None for both path and cost
 
-def make_cost(previous_node, start, end):
-    path = []
-    current = end
+def build_path(previous_node, start, end):
+    path = [] #list the store the path from the end to the start
+    current = end #We start at the end node because previous_node tells us how we goto each node
+    #we work backwards. for each node, we look up where we came from until we reach the start node
     while current != start:
-        path.append(current)
+        path.append(current) #Add the current node to the path
         if current not in previous_node:
+            #If we cant find how we got to this node then there is no valid path
             return None
-        current = previous_node[current]
-    path.append(start)
-    path.reverse()
-    return path
+        current = previous_node[current] #Mmove to the previous node in the path
+    path.append(start) #Finally add the start node
+    path.reverse() #Reverse the path so it goes from the start to end not the other way aroubd 
+    return path #return the full oath from start to end. 
 
     
 if __name__ == "__main__":
