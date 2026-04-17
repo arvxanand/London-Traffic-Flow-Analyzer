@@ -125,7 +125,7 @@ def make_road_system_graph(day: date) -> Graph:
             print(f"NO DATA for {start_node} -> {end_node} (Using 30mph as placeholder)")
             #If no sensor data came back then we use 30mph as a placeholder so the edge still gets added to the graph
         else:
-            travel_time = (distance / speed) * 60
+            travel_time = (distance / speed) * 60 #calc the travel time in minutes
         if travel_time is not None:
             #Check if value exists because you cant round a 0 or a value that doesnt exist
             rounded_travel_time = round(travel_time, 2)
