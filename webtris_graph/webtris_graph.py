@@ -284,7 +284,7 @@ if __name__ == "__main__":
     if dijkstra_path:
         print("Dijkstra's Path:")
         for node in dijkstra_path:
-            print(node, " -> ")
+            print(node, end=" -> ")
         print()
         print(f"Number of nodes {len(dijkstra_path)}")
         print(f"Total time: {dijkstra_time} mins")
