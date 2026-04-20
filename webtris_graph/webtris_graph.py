@@ -112,7 +112,7 @@ def make_road_system_graph(day: date) -> Graph:
         ("J12", "J13", "12-13", 3),
         ("J13", "J14", "13-14", 3),
         ("J14", "Heathrow", "14-Heathrow", 3),
-        ("J13", "Heathrow", "A30", 3.8),
+        ("J13", "Heathrow", "A30", 6.8),
     ]
 
     #Looping through each edge and find its travel time
